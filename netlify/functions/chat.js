@@ -34,7 +34,6 @@ exports.handler = async function(event, context) {
       headers: {
         'Content-Type': 'application/json',
         'x-api-key': ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01'
       }
     });
 
@@ -47,11 +46,17 @@ exports.handler = async function(event, context) {
     console.error('Error details:', error);
     console.error('Response data:', error.response?.data);
     console.error('Response status:', error.response?.status);
+    
+    let errorMessage = 'Failed to communicate with Anthropic API';
+    if (error.response?.data?.error?.type) {
+      errorMessage += `: ${error.response.data.error.type}`;
+    }
+    
     return {
       statusCode: error.response?.status || 500,
       body: JSON.stringify({ 
-        error: 'Failed to communicate with Anthropic API',
-        details: error.response?.data || error.message || 'Unknown error'
+        error: errorMessage,
+        details: error.response?.data?.error?.message || error.message || 'Unknown error'
       })
     };
   }
