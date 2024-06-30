@@ -48,11 +48,15 @@
             display: none;
             background-color: var(--notion-button);
             color: var(--notion-text);
-            padding: 10px;
+            padding: 8px;
             border-radius: 50%;
             cursor: pointer;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             transition: opacity 0.3s;
+        }
+        #copy-button svg {
+            width: 16px;
+            height: 16px;
         }
         #copy-button:hover {
             opacity: 0.8;
@@ -82,7 +86,7 @@
         </div>
     </div>
     <button id="copy-button" title="Copy response to clipboard">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
         </svg>
@@ -101,7 +105,7 @@
         const copyButton = document.getElementById('copy-button');
 
         let selectedModel = modelSelect.value;
-        let lastResponse = '';
+        let formattedResponse = '';
         updatePlaceholder();
 
         function updateTheme() {
@@ -128,8 +132,9 @@
             const messageElement = document.createElement('div');
             messageElement.className = 'mb-4';
             if (isAI) {
-                messageElement.innerHTML = marked.parse(message);
-                lastResponse = message;
+                const formattedMessage = marked.parse(message);
+                messageElement.innerHTML = formattedMessage;
+                formattedResponse = messageElement.innerHTML;
                 copyButton.style.display = 'block';
             } else {
                 messageElement.innerHTML = `<strong>Question:</strong> ${message}`;
@@ -228,11 +233,14 @@
         });
 
         copyButton.addEventListener('click', () => {
-            navigator.clipboard.writeText(lastResponse).then(() => {
+            const tempElement = document.createElement('div');
+            tempElement.innerHTML = formattedResponse;
+            
+            navigator.clipboard.writeText(tempElement.textContent).then(() => {
                 copyButton.innerHTML = '✓';
                 setTimeout(() => {
                     copyButton.innerHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                         </svg>
