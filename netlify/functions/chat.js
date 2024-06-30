@@ -9,7 +9,10 @@ exports.handler = async function(event, context) {
 
   const { message, model } = JSON.parse(event.body);
 
+  console.log('Received request:', { message, model });
+
   try {
+    console.log('Sending request to Anthropic API');
     const response = await axios.post('https://api.anthropic.com/v1/messages', {
       model: model,
       messages: [{ role: "user", content: message }],
@@ -22,15 +25,19 @@ exports.handler = async function(event, context) {
       }
     });
 
+    console.log('Received response from Anthropic API');
     return {
       statusCode: 200,
       body: JSON.stringify({ content: response.data.content[0].text })
     };
   } catch (error) {
-    console.error('Error:', error.response ? error.response.data : error.message);
+    console.error('Error details:', error.response ? error.response.data : error.message);
     return {
       statusCode: error.response?.status || 500,
-      body: JSON.stringify({ error: error.response?.data?.error?.message || 'Failed to communicate with Anthropic API' })
+      body: JSON.stringify({ 
+        error: 'Failed to communicate with Anthropic API',
+        details: error.response ? error.response.data : error.message
+      })
     };
   }
 };
