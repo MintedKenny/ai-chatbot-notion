@@ -47,7 +47,7 @@
             <select id="model-select" class="w-full border rounded px-4 py-2">
                 <option value="claude-3-opus-20240229">Claude 3 Opus</option>
                 <option value="claude-3-sonnet-20240229">Claude 3 Sonnet</option>
-                <option value="claude-3.5-sonnet-20240620" selected>Claude 3.5 Sonnet</option>
+                <option value="claude-3.5-sonnet-20240229" selected>Claude 3.5 Sonnet</option>
                 <option value="claude-3-haiku-20240307">Claude 3 Haiku</option>
             </select>
         </div>
@@ -119,13 +119,13 @@
         }
 
         function showNewQuestionButton() {
-            chatForm.classList.add('hidden');
+            chatForm.classList.remove('hidden');
             newQuestionButton.classList.remove('hidden');
             backButton.classList.add('hidden');
         }
 
         function showBackButton() {
-            chatForm.classList.add('hidden');
+            chatForm.classList.remove('hidden');
             newQuestionButton.classList.add('hidden');
             backButton.classList.remove('hidden');
         }
@@ -153,6 +153,9 @@
             modelSelection.classList.add('hidden');
             appendMessage(userMessage);
             userInput.value = '';
+            
+            // Hide the chat form while generating response
+            chatForm.classList.add('hidden');
             
             appendMessage("Generating response...", true, true);
 
