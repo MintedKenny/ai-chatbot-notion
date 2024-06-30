@@ -1,6 +1,7 @@
 const axios = require('axios');
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+const ANTHROPIC_API_VERSION = '2023-06-01';
 
 exports.handler = async function(event, context) {
   console.log('Function invoked');
@@ -34,6 +35,7 @@ exports.handler = async function(event, context) {
       headers: {
         'Content-Type': 'application/json',
         'x-api-key': ANTHROPIC_API_KEY,
+        'anthropic-version': ANTHROPIC_API_VERSION
       }
     });
 
