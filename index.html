@@ -52,10 +52,12 @@
             </select>
         </div>
         <div id="chat-history" class="mb-4"></div>
-        <form id="chat-form" class="flex">
-            <input type="text" id="user-input" class="flex-grow border rounded-l px-4 py-2" placeholder="Ask Claude 3.5 Sonnet">
-            <button type="submit" class="hover:opacity-80 text-white px-4 py-2 rounded-r">Send</button>
-        </form>
+        <div id="input-container">
+            <form id="chat-form" class="flex">
+                <input type="text" id="user-input" class="flex-grow border rounded-l px-4 py-2" placeholder="Ask Claude 3.5 Sonnet">
+                <button type="submit" class="hover:opacity-80 text-white px-4 py-2 rounded-r">Send</button>
+            </form>
+        </div>
         <div class="flex justify-center">
             <button id="new-question" class="mt-4 hover:opacity-80 text-white px-4 py-2 rounded hidden">New question</button>
             <button id="back-button" class="mt-4 hover:opacity-80 text-white px-4 py-2 rounded hidden">Back</button>
@@ -71,6 +73,7 @@
         const modelSelection = document.getElementById('model-selection');
         const newQuestionButton = document.getElementById('new-question');
         const backButton = document.getElementById('back-button');
+        const inputContainer = document.getElementById('input-container');
 
         let selectedModel = modelSelect.value;
         updatePlaceholder();
@@ -119,13 +122,13 @@
         }
 
         function showNewQuestionButton() {
-            chatForm.classList.remove('hidden');
+            inputContainer.classList.add('hidden');
             newQuestionButton.classList.remove('hidden');
             backButton.classList.add('hidden');
         }
 
         function showBackButton() {
-            chatForm.classList.remove('hidden');
+            inputContainer.classList.add('hidden');
             newQuestionButton.classList.add('hidden');
             backButton.classList.remove('hidden');
         }
@@ -133,7 +136,7 @@
         function resetWidget() {
             chatHistory.innerHTML = '';
             modelSelection.classList.remove('hidden');
-            chatForm.classList.remove('hidden');
+            inputContainer.classList.remove('hidden');
             newQuestionButton.classList.add('hidden');
             backButton.classList.add('hidden');
             selectedModel = modelSelect.value;
@@ -154,8 +157,8 @@
             appendMessage(userMessage);
             userInput.value = '';
             
-            // Hide the chat form while generating response
-            chatForm.classList.add('hidden');
+            // Hide the input container while generating response
+            inputContainer.classList.add('hidden');
             
             appendMessage("Generating response...", true, true);
 
