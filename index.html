@@ -53,6 +53,7 @@
             <button type="submit" class="bg-[#2eaadc] hover:bg-[#2eaadc]/80 text-white px-4 py-2 rounded-r">Send</button>
         </form>
         <button id="new-question" class="mt-4 bg-[#2eaadc] hover:bg-[#2eaadc]/80 text-white px-4 py-2 rounded hidden">Ask a new question</button>
+        <button id="back-button" class="mt-4 bg-[#2eaadc] hover:bg-[#2eaadc]/80 text-white px-4 py-2 rounded hidden">Back</button>
     </div>
 
     <script>
@@ -63,6 +64,7 @@
         const widgetContainer = document.getElementById('widget-container');
         const modelSelection = document.getElementById('model-selection');
         const newQuestionButton = document.getElementById('new-question');
+        const backButton = document.getElementById('back-button');
         const themeToggle = document.getElementById('theme-toggle');
 
         let selectedModel = modelSelect.value;
@@ -92,6 +94,13 @@
         function showNewQuestionButton() {
             chatForm.classList.add('hidden');
             newQuestionButton.classList.remove('hidden');
+            backButton.classList.add('hidden');
+        }
+
+        function showBackButton() {
+            chatForm.classList.add('hidden');
+            newQuestionButton.classList.add('hidden');
+            backButton.classList.remove('hidden');
         }
 
         function resetWidget() {
@@ -99,6 +108,7 @@
             modelSelection.classList.remove('hidden');
             chatForm.classList.remove('hidden');
             newQuestionButton.classList.add('hidden');
+            backButton.classList.add('hidden');
             selectedModel = modelSelect.value;
             updatePlaceholder();
         }
@@ -139,11 +149,13 @@
                 showNewQuestionButton();
             } catch (error) {
                 console.error('Error:', error);
-                appendMessage(`An error occurred: ${error.message}. Details: ${JSON.stringify(error)}. Please try again.`);
+                chatHistory.innerHTML += `<div class="mb-4 text-red-500">An error occurred: ${error.message}. Please try again.</div>`;
+                showBackButton();
             }
         });
 
         newQuestionButton.addEventListener('click', resetWidget);
+        backButton.addEventListener('click', resetWidget);
 
         themeToggle.addEventListener('click', () => {
             widgetContainer.classList.toggle('dark-mode');
