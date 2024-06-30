@@ -38,10 +38,10 @@
     <div id="widget-container" class="bg-white">
         <div id="model-selection" class="mb-4 flex items-center justify-between">
             <select id="model-select" class="w-full border rounded px-4 py-2 mr-2">
-                <option value="claude-3-opus-20240229">Claude 3 Opus</option>
-                <option value="claude-3-sonnet-20240229">Claude 3 Sonnet</option>
-                <option value="claude-3.5-sonnet-20240229" selected>Claude 3.5 Sonnet</option>
-                <option value="claude-3-haiku-20240307">Claude 3 Haiku</option>
+                <option value="claude-3-opus">Claude 3 Opus</option>
+                <option value="claude-3-sonnet">Claude 3 Sonnet</option>
+                <option value="claude-3.5-sonnet" selected>Claude 3.5 Sonnet</option>
+                <option value="claude-3-haiku">Claude 3 Haiku</option>
             </select>
             <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
                 ◐
@@ -50,9 +50,9 @@
         <div id="chat-history" class="mb-4"></div>
         <form id="chat-form" class="flex">
             <input type="text" id="user-input" class="flex-grow border rounded-l px-4 py-2" placeholder="Ask Claude 3.5 Sonnet">
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-r">Send</button>
+            <button type="submit" class="bg-[#2eaadc] text-white px-4 py-2 rounded-r">Send</button>
         </form>
-        <button id="new-question" class="mt-4 bg-green-500 text-white px-4 py-2 rounded w-full hidden">Ask a new question</button>
+        <button id="new-question" class="mt-4 bg-[#2eaadc] text-white px-4 py-2 rounded hidden">New question</button>
     </div>
 
     <script>
@@ -66,7 +66,7 @@
         const themeToggle = document.getElementById('theme-toggle');
 
         let selectedModel = modelSelect.value;
-        userInput.placeholder = `Ask ${selectedModel}`;
+        updatePlaceholder();
 
         function resizeWidget() {
             const height = window.innerHeight;
@@ -82,7 +82,7 @@
             if (isAI) {
                 messageElement.innerHTML = marked.parse(message);
             } else {
-                messageElement.textContent = message;
+                messageElement.innerHTML = `<strong>Question:</strong> ${message}`;
             }
             chatHistory.appendChild(messageElement);
             chatHistory.scrollTop = chatHistory.scrollHeight;
@@ -100,7 +100,12 @@
             chatForm.classList.remove('hidden');
             newQuestionButton.classList.add('hidden');
             selectedModel = modelSelect.value;
-            userInput.placeholder = `Ask ${selectedModel}`;
+            updatePlaceholder();
+        }
+
+        function updatePlaceholder() {
+            const modelName = selectedModel.split('-').slice(0, -1).join(' ');
+            userInput.placeholder = `Ask ${modelName}`;
         }
 
         chatForm.addEventListener('submit', async (e) => {
@@ -142,11 +147,13 @@
 
         themeToggle.addEventListener('click', () => {
             widgetContainer.classList.toggle('dark-mode');
+            document.body.classList.toggle('bg-white');
+            document.body.classList.toggle('bg-[#1a202c]');
         });
 
         modelSelect.addEventListener('change', () => {
             selectedModel = modelSelect.value;
-            userInput.placeholder = `Ask ${selectedModel}`;
+            updatePlaceholder();
         });
 
         // Initial resize
