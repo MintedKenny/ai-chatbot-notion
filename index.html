@@ -41,6 +41,22 @@
             list-style-type: decimal;
             padding-left: 1.5em;
         }
+        #copy-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: none;
+            background-color: var(--notion-button);
+            color: var(--notion-text);
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: opacity 0.3s;
+        }
+        #copy-button:hover {
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body>
@@ -65,6 +81,12 @@
             <button id="back-button" class="mt-4 hover:opacity-80 text-white px-4 py-2 rounded hidden">Back</button>
         </div>
     </div>
+    <button id="copy-button" title="Copy response to clipboard">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+    </button>
 
     <script>
         const chatForm = document.getElementById('chat-form');
@@ -76,8 +98,10 @@
         const newQuestionButton = document.getElementById('new-question');
         const backButton = document.getElementById('back-button');
         const inputContainer = document.getElementById('input-container');
+        const copyButton = document.getElementById('copy-button');
 
         let selectedModel = modelSelect.value;
+        let lastResponse = '';
         updatePlaceholder();
 
         function updateTheme() {
@@ -105,6 +129,8 @@
             messageElement.className = 'mb-4';
             if (isAI) {
                 messageElement.innerHTML = marked.parse(message);
+                lastResponse = message;
+                copyButton.style.display = 'block';
             } else {
                 messageElement.innerHTML = `<strong>Question:</strong> ${message}`;
             }
@@ -141,6 +167,7 @@
             inputContainer.classList.remove('hidden');
             newQuestionButton.classList.add('hidden');
             backButton.classList.add('hidden');
+            copyButton.style.display = 'none';
             selectedModel = modelSelect.value;
             updatePlaceholder();
         }
@@ -198,6 +225,20 @@
         modelSelect.addEventListener('change', () => {
             selectedModel = modelSelect.value;
             updatePlaceholder();
+        });
+
+        copyButton.addEventListener('click', () => {
+            navigator.clipboard.writeText(lastResponse).then(() => {
+                copyButton.innerHTML = '✓';
+                setTimeout(() => {
+                    copyButton.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                    `;
+                }, 2000);
+            });
         });
 
         resizeWidget();
