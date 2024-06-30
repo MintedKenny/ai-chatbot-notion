@@ -21,6 +21,8 @@
             transition: background-color 0.3s, color 0.3s;
             background-color: var(--notion-bg);
             color: var(--notion-text);
+            border: 2px solid var(--notion-border);
+            box-sizing: border-box;
         }
         #widget-container select, #widget-container input {
             background-color: var(--notion-bg-light);
@@ -157,7 +159,6 @@
             appendMessage(userMessage);
             userInput.value = '';
             
-            // Hide the input container while generating response
             inputContainer.classList.add('hidden');
             
             appendMessage("Generating response...", true, true);
