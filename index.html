@@ -5,19 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Chatbot Widget</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        #chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        #chat-history {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 h-screen flex items-center justify-center">
-    <div class="bg-white p-6 rounded-lg shadow-md w-96">
-        <h1 class="text-2xl font-bold mb-4">AI Chatbot</h1>
-        <div id="chat-container">
+<body class="bg-gray-100 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg shadow-md w-full max-w-md" id="widget-container">
+        <div id="chat-container" class="p-4">
+            <h1 class="text-2xl font-bold mb-4">AI Chatbot</h1>
             <select id="model-select" class="w-full border rounded px-4 py-2 mb-4">
                 <option value="claude-3-opus-20240229">Claude 3 Opus</option>
                 <option value="claude-3-sonnet-20240229">Claude 3 Sonnet</option>
                 <option value="claude-3.5-sonnet-20240229">Claude 3.5 Sonnet</option>
                 <option value="claude-3-haiku-20240307">Claude 3 Haiku</option>
             </select>
-            <div id="chat-history" class="mb-4 h-64 overflow-y-auto"></div>
-            <form id="chat-form" class="flex">
+            <div id="chat-history" class="mb-4"></div>
+            <form id="chat-form" class="flex mt-auto">
                 <input type="text" id="user-input" class="flex-grow border rounded-l px-4 py-2" placeholder="Type your message...">
                 <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-r">Send</button>
             </form>
@@ -29,6 +46,21 @@
         const userInput = document.getElementById('user-input');
         const chatHistory = document.getElementById('chat-history');
         const modelSelect = document.getElementById('model-select');
+        const widgetContainer = document.getElementById('widget-container');
+
+        function resizeWidget() {
+            const height = widgetContainer.offsetHeight;
+            window.parent.postMessage({ type: 'resize', height }, '*');
+        }
+
+        function appendMessage(sender, message) {
+            const messageElement = document.createElement('div');
+            messageElement.className = 'mb-2';
+            messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
+            chatHistory.appendChild(messageElement);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+            resizeWidget();
+        }
 
         chatForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -65,13 +97,11 @@
             }
         });
 
-        function appendMessage(sender, message) {
-            const messageElement = document.createElement('div');
-            messageElement.className = 'mb-2';
-            messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
-            chatHistory.appendChild(messageElement);
-            chatHistory.scrollTop = chatHistory.scrollHeight;
-        }
+        // Initial resize
+        resizeWidget();
+
+        // Resize on window resize
+        window.addEventListener('resize', resizeWidget);
     </script>
 </body>
 </html>
