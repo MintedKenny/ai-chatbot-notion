@@ -22,12 +22,9 @@ exports.handler = async function(event, context) {
       }
     });
 
-    // Extract the content from the response
-    const aiMessage = response.data.content[0].text;
-
     return {
       statusCode: 200,
-      body: JSON.stringify({ content: aiMessage })
+      body: JSON.stringify({ content: response.data.content[0].text })
     };
   } catch (error) {
     console.error('Error:', error.response ? error.response.data : error.message);
