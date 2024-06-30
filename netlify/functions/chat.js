@@ -1,6 +1,5 @@
 const axios = require('axios');
 
-// Store this securely in your Netlify environment variables
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 
 exports.handler = async function(event, context) {
@@ -23,12 +22,15 @@ exports.handler = async function(event, context) {
       }
     });
 
+    // Extract the content from the response
+    const aiMessage = response.data.content[0].text;
+
     return {
       statusCode: 200,
-      body: JSON.stringify(response.data)
+      body: JSON.stringify({ content: aiMessage })
     };
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error:', error.response ? error.response.data : error.message);
     return {
       statusCode: error.response?.status || 500,
       body: JSON.stringify({ error: error.response?.data?.error?.message || 'Failed to communicate with Anthropic API' })
