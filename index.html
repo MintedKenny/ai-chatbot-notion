@@ -126,13 +126,10 @@
 
                 const data = await response.json();
 
-                if (!response.ok) {
-                    throw new Error(data.error || 'API request failed');
+                if (!response.ok || data.error) {
+                    throw new Error(data.error || `HTTP error! status: ${response.status}`);
                 }
 
-                if (data.error) {
-                    throw new Error(data.error);
-                }
                 appendMessage(data.content, true);
                 showNewQuestionButton();
             } catch (error) {
