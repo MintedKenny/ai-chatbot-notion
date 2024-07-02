@@ -1,10 +1,11 @@
-Prerequisites
+**Prerequisites**
 
 GitHub account
 Netlify account
 Anthropic API key
 
-Step-by-Step Setup
+**Step-by-Step Setup**
+
 1. Obtain an Anthropic API Key
 
 Go to the Anthropic website and sign up for an account if you haven't already.
@@ -56,7 +57,7 @@ This will ensure your site is using the newly added environment variable.
 Paste Netlify site link directly into Notion.
 Should work! You now have your own AI chatbot widget powered by Claude AI models and hosted on Netlify.
 
-Troubleshooting
+**Troubleshooting**
 
 If you encounter any errors related to the Anthropic API, double-check that your API key is correct and properly set in the Netlify environment variables.
 For other issues, check the Netlify function logs in your Netlify dashboard under Functions > ai-chatbot-notion > Logs.
